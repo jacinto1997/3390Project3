@@ -26,13 +26,13 @@ const submitMessage = async () => {
       lon
     }
     try {
-      // await axios.post('http://localhost:3000/addMessage', postData)
-      // emit('messagePosted')
+       await axios.post('http://localhost:3000/addMessage', postData)
+       emit('messagePosted')
       // Temporarily simulate post locally
-      postData.date = new Date().toLocaleString()
-      postData.weather = 'Clear'
-      postData.temp = '72'
-      emit('messagePosted', postData)
+     // postData.date = new Date().toLocaleString()
+     // postData.weather = 'Clear'
+     // postData.temp = '72'
+     // emit('messagePosted', postData)
 
       username.value = ''
       message.value = ''

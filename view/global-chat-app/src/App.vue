@@ -1,9 +1,9 @@
 <template>
   <div class="container">
     <h1>Global Chat</h1>
-    <!-- <PostForm @messagePosted="fetchMessages" /> -->
-    <PostForm @messagePosted="addFakeMessage" />
-    <div class="message-list">
+    <PostForm @messagePosted="fetchMessages" />
+    <!-- <PostForm @messagePosted="addFakeMessage" /> -->
+      <div class="message-list">
       <MessageCard
         v-for="msg in messages"
         :key="msg.id"
@@ -20,25 +20,7 @@ import PostForm from './components/PostForm.vue'
 import MessageCard from './components/MessageCard.vue'
 
 
-const messages = ref([
-  {
-    id: 1,
-    username: "Matthew",
-    message: "This is a test post.",
-    date: "April 28, 2025 — 3:45 PM",
-    weather: "Clear",
-    temp: "72"
-  },
-  {
-    id: 2,
-    username: "Sarah",
-    message: "It's cloudy where I am!",
-    date: "April 28, 2025 — 3:46 PM",
-    weather: "Clouds",
-    temp: "68"
-  }
-])
-
+const messages = ref([])
 
 const fetchMessages = async () => {
   try {
@@ -54,7 +36,7 @@ const addFakeMessage = (newMsg) => {
   messages.value.unshift(newMsg)
 }
 
-// onMounted(fetchMessages)
+onMounted(fetchMessages)
 </script>
 
 <style scoped>
