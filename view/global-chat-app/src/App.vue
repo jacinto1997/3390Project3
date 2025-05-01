@@ -19,7 +19,7 @@ import axios from 'axios'
 import PostForm from './components/PostForm.vue'
 import MessageCard from './components/MessageCard.vue'
 
-<!-- <test messages (replace later when backend is finished) -->
+
 const messages = ref([
   {
     id: 1,
