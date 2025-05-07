@@ -1,11 +1,20 @@
 <template>
-    <div class="trending-panel">
-      <h2>🔥 Trending Messages</h2>
-      <ul>
-        <li v-for="msg in trendingMessages" :key="msg.id">
-          <strong>{{ msg.username }}:</strong> {{ msg.message }} (👍 {{ msg.likes }})
-        </li>
-      </ul>
+    <div class="trending-card">
+      <h2>🔥 Trending</h2>
+      <table>
+        <thead>
+          <tr>
+            <th>Words</th>
+            <th>Mentions</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr v-for="msg in trendingMessages" :key="msg.id">
+            <td>{{ msg.word }}</td>
+            <td>{{ msg.count }}</td>
+          </tr>
+        </tbody>
+      </table>
     </div>
   </template>
   
@@ -30,11 +39,27 @@
   </script>
   
   <style scoped>
-  .trending-panel {
-    background-color: #fff3e0;
+  .trending-card {
+    background-color: #2196f3;
+    color: white;
     padding: 16px;
-    border-radius: 8px;
-    margin-bottom: 16px;
+    border-radius: 16px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  }
+  h2 {
+    margin-bottom: 12px;
+  }
+  table {
+    width: 100%;
+    border-collapse: collapse;
+  }
+  th,
+  td {
+    text-align: left;
+    padding: 6px;
+  }
+  tbody tr:nth-child(even) {
+    background-color: rgba(255, 255, 255, 0.1);
   }
   </style>
   
