@@ -1,16 +1,18 @@
 <template>
   <div class="app-container">
-    <header class="header">
-      <h1>🌍 Global Chat</h1>
-      <div v-if="currentUser" class="profile-menu">
-        <span class="username-label">{{ currentUser.username }}</span>
-        <button @click="showMenu = !showMenu" class="profile-icon">👤</button>
-        <div v-if="showMenu" class="dropdown">
-          <button @click="logout">Logout</button>
-          <button @click="deleteAccount">Delete Account</button>
-        </div>
-      </div>
-    </header>
+    <header class="app-header">
+  <h1 class="app-title">🌍 Global Chat</h1>
+  <div v-if="currentUser" class="profile-box">
+    <span class="username-label">{{ currentUser.username }}</span>
+    <button @click="showMenu = !showMenu" class="profile-icon">👤</button>
+    <div v-if="showMenu" class="dropdown">
+      <button @click="logout">Logout</button>
+      <button @click="deleteAccount">Delete Account</button>
+    </div>
+  </div>
+</header>
+
+
 
     <LoginForm v-if="!currentUser" @loginSuccess="onLogin" />
 
@@ -98,37 +100,63 @@ onMounted(() => {
   margin: 0 auto;
   padding: 20px;
 }
-.header {
+
+.app-header {
+  background: linear-gradient(to right, #4caf50, #81c784);
+  color: white;
+  padding: 16px 24px;
+  border-radius: 12px;
+  margin-bottom: 20px;
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-bottom: 20px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
 }
-.profile-menu {
-  position: relative;
+
+.app-title {
+  font-size: 2rem;
+  font-weight: 700;
+  letter-spacing: 1px;
+}
+
+.profile-box {
+  background-color: rgba(255, 255, 255, 0.2);
+  padding: 8px 14px;
+  border-radius: 24px;
   display: flex;
   align-items: center;
+  gap: 8px;
+  color: white;
+  position: relative;
+  font-size: 1rem;
 }
+
 .username-label {
-  margin-right: 8px;
-  font-weight: 500;
+  color: white;
+  font-weight: 600;
+  white-space: nowrap;
 }
+
+
 .profile-icon {
-  font-size: 24px;
+  font-size: 20px;
   background: none;
   border: none;
   cursor: pointer;
+  color: white;
 }
+
 .dropdown {
   position: absolute;
-  top: 35px;
-  right: 0;
+  top: 70px;
+  right: 24px;
   background: white;
-  border: 1px solid #ddd;
+  border: 1px solid #ccc;
   border-radius: 8px;
   padding: 8px;
-  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
 }
+
 .dropdown button {
   display: block;
   width: 100%;
@@ -138,11 +166,13 @@ onMounted(() => {
   text-align: left;
   cursor: pointer;
 }
+
 .main-grid {
   display: grid;
   grid-template-columns: 1fr 2fr 1fr;
   gap: 20px;
 }
+
 .left-column,
 .center-column,
 .right-column {

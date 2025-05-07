@@ -73,7 +73,11 @@ app.post('/login', async (req, res) => {
 
   try {
     const user = await verifyUser({ username, password })
-    res.json({ success: true, user })
+    res.json({
+      username: user.username,
+      profilePic: user.profilePic || null
+    })
+    
   } catch (err) {
     console.error('Login error:', err.message)
     res.status(401).json({ error: 'Invalid username or password.' })

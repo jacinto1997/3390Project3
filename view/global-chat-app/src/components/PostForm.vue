@@ -9,40 +9,50 @@
 import { ref } from 'vue'
 import axios from 'axios'
 
-const { currentUser } = defineProps({
-  currentUser: Object
-})
-
-
 const emit = defineEmits(['messagePosted'])
 const message = ref('')
 
 const submitMessage = async () => {
   if (!navigator.geolocation) return alert('Location not supported.')
 
+  const user = JSON.parse(localStorage.getItem('currentUser'))
+  if (!user) return alert('You must be logged in to post.')
+
   navigator.geolocation.getCurrentPosition(async (pos) => {
     const lat = pos.coords.latitude
     const lon = pos.coords.longitude
 
     try {
-      const apiKey = '9055233e47a5f72f45363e40bbad40f3'
-      const weatherUrl = `https://api.openweathermap.org/data/2.5/weather?lat=${lat}&lon=${lon}&appid=${apiKey}&units=imperial`
+      // Weather
+      const weatherApiKey = '9055233e47a5f72f45363e40bbad40f3'
+      const weatherUrl = `https://api.openweathermap.org/data/2.5/weather?lat=${lat}&lon=${lon}&appid=${weatherApiKey}&units=imperial`
       const weatherRes = await fetch(weatherUrl)
       const weatherData = await weatherRes.json()
-
       const weather = weatherData.weather[0].main
       const temp = Math.round(weatherData.main.temp)
-      const city = weatherData.name || 'Unknown'
+
+      // Location
+      const geoApiKey = '7992c03b9e8b44e2ab85717dac1b2e17'
+      const geoUrl = `https://api.opencagedata.com/geocode/v1/json?q=${lat}+${lon}&key=${geoApiKey}`
+      const geoRes = await fetch(geoUrl)
+      const geoData = await geoRes.json()
+      const city =
+        geoData.results[0]?.components?.city ||
+        geoData.results[0]?.components?.town ||
+        geoData.results[0]?.components?.village ||
+        geoData.results[0]?.components?.state_district ||
+        'Unknown'
 
       const postData = {
-        username: currentUser.username,
-        profilePic: currentUser.profilePic,
+        username: user.username,
+        profilePic: user.profilePic,
         message: message.value,
         lat,
         lon,
         weather,
         temp,
-        city
+        city,
+        date: new Date().toLocaleString()
       }
 
       await axios.post('http://localhost:3000/addMessage', postData)
@@ -67,6 +77,7 @@ form {
 textarea {
   padding: 10px;
   font-size: 16px;
+  resize: none;
 }
 button {
   padding: 10px;

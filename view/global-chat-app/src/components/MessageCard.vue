@@ -1,166 +1,159 @@
 <template>
-  <div class="message-card" :style="{ backgroundColor: getColor(messageData.weather) }">
-    <div class="top-row">
-      <div class="user-info">
-        <img class="profile-pic" :src="messageData.profilePic || defaultPic" alt="User" />
-        <h3 class="username">{{ messageData.username }}</h3>
+  <div class="card">
+    <div class="card-header">
+      <div class="profile">
+        <div class="avatar">
+          <img
+            v-if="messageData.profilePic"
+            :src="messageData.profilePic"
+            alt="avatar"
+          />
+          <span v-else>{{ messageData.username.charAt(0).toUpperCase() }}</span>
+        </div>
+        <strong>{{ messageData.username }}</strong>
       </div>
-      <div class="weather">
-        <span>{{ getIcon(messageData.weather) }}</span>
-        {{ messageData.temp }}°F
+      <div class="weather-info">
+        <span>{{ messageData.city }}</span>
+        <span>{{ weatherEmoji(messageData.weather) }} {{ messageData.temp }}°F</span>
       </div>
     </div>
 
-    <p class="text">{{ messageData.message }}</p>
+    <p class="message-text">{{ messageData.message }}</p>
 
-    <div class="bottom-row">
-      <p class="meta">{{ messageData.date }}</p>
-      <p class="meta">📍 {{ messageData.city || 'Unknown Location' }}</p>
-    </div>
-
-    <div class="reactions">
-      <button @click="react('like')">👍 {{ messageData.likes }}</button>
-      <button @click="react('dislike')">👎 {{ messageData.dislikes }}</button>
-
-      <button
-        v-if="currentUser?.username === messageData.username"
-        @click="deleteMessage"
-        class="delete-btn"
-      >
-        🗑️
-      </button>
+    <div class="card-footer">
+      <div class="timestamp">{{ messageData.date }}</div>
+      <div class="actions">
+        <span @click="like" class="action">👍 {{ messageData.likes }}</span>
+        <span @click="dislike" class="action">👎 {{ messageData.dislikes }}</span>
+        <span
+          v-if="currentUser?.username === messageData.username"
+          @click="deleteMsg"
+          class="action delete"
+        >🗑️</span>
+      </div>
     </div>
   </div>
 </template>
 
 <script setup>
 import axios from 'axios'
-
-const props = defineProps({
-  messageData: Object,
-  currentUser: Object
-})
-
+const props = defineProps(['messageData', 'currentUser'])
 const emit = defineEmits(['messageChanged'])
 
-const defaultPic = 'https://i.imgur.com/0y0y0y0.png' // fallback pic
-
-const getIcon = (weather) => {
-  switch (weather) {
-    case 'Clear': return '☀️'
-    case 'Clouds': return '☁️'
-    case 'Rain': return '🌧️'
-    case 'Snow': return '❄️'
-    case 'Thunderstorm': return '⛈️'
-    case 'Drizzle': return '🌦️'
-    case 'Mist':
-    case 'Fog':
-    case 'Haze': return '🌫️'
-    default: return '🌡️'
-  }
+const like = async () => {
+  await axios.post(`http://localhost:3000/like/${props.messageData.id}`)
+  emit('messageChanged')
 }
-
-const getColor = (weather) => {
-  switch (weather) {
-    case 'Clear': return '#fefcbf'
-    case 'Clouds': return '#e0e0e0'
-    case 'Rain': return '#cce5ff'
-    case 'Snow': return '#f0faff'
-    case 'Thunderstorm': return '#e5ccff'
-    case 'Drizzle': return '#d6ecff'
-    case 'Mist':
-    case 'Fog':
-    case 'Haze': return '#dddddd'
-    default: return '#f8f8f8'
-  }
+const dislike = async () => {
+  await axios.post(`http://localhost:3000/dislike/${props.messageData.id}`)
+  emit('messageChanged')
 }
-
-const react = async (type) => {
-  try {
-    await axios.post(`http://localhost:3000/${type}/${props.messageData.id}`)
-    emit('messageChanged')
-  } catch (err) {
-    alert('Failed to send reaction')
-    console.error(err)
-  }
-}
-
-const deleteMessage = async () => {
-  if (!confirm('Delete this message?')) return
-  try {
+const deleteMsg = async () => {
+  if (confirm('Delete this message?')) {
     await axios.post(`http://localhost:3000/deleteMessage/${props.messageData.id}`, {
-      username: props.currentUser.username
-    })
+  username: props.currentUser.username
+})
+
     emit('messageChanged')
-  } catch (err) {
-    alert('Failed to delete message')
-    console.error(err)
   }
+}
+
+const weatherEmoji = (weather) => {
+  const map = {
+    Clear: '☀️',
+    Clouds: '⛅',
+    Rain: '🌧️',
+    Thunderstorm: '⛈️',
+    Snow: '❄️',
+    Drizzle: '🌦️',
+    Mist: '🌫️'
+  }
+  return map[weather] || '🌡️'
 }
 </script>
 
 <style scoped>
-.message-card {
+.card {
+  background-color: #fff9c4;
   padding: 16px;
   border-radius: 12px;
-  margin: 12px 0;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+  box-shadow: 0 3px 8px rgba(0, 0, 0, 0.1);
+  margin-bottom: 12px;
+  position: relative;
+}
+
+.card-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.profile {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.avatar {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  overflow: hidden;
+  background-color: #4caf50;
+  color: white;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: bold;
+  font-size: 1rem;
   border: 1px solid #ccc;
+}
+
+.avatar img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.weather-info {
+  font-size: 0.9rem;
+  text-align: right;
+  color: #333;
   display: flex;
   flex-direction: column;
-  gap: 10px;
+  align-items: flex-end;
+  gap: 2px;
 }
-.top-row {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-}
-.user-info {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-}
-.profile-pic {
-  width: 36px;
-  height: 36px;
-  border-radius: 50%;
-  object-fit: cover;
-  border: 2px solid #ccc;
-}
-.username {
-  font-weight: 600;
+
+.message-text {
+  margin: 16px 0;
   font-size: 1.1rem;
+  word-wrap: break-word;
 }
-.weather {
-  font-size: 1rem;
-  font-weight: 500;
-  display: flex;
-  align-items: center;
-  gap: 6px;
-}
-.text {
-  font-size: 1.05rem;
-  line-height: 1.4;
-  text-align: center;
-}
-.bottom-row {
+
+.card-footer {
   display: flex;
   justify-content: space-between;
-  font-size: 0.85rem;
+  align-items: flex-end;
+  font-size: 0.8rem;
   color: #444;
+  padding-top: 10px;
 }
-.reactions {
+
+.timestamp {
+  align-self: flex-end;
+}
+
+.actions {
   display: flex;
   gap: 10px;
-  justify-content: flex-end;
 }
-.reactions button {
-  background: none;
-  border: none;
-  font-size: 1rem;
+
+.action {
   cursor: pointer;
 }
-.delete-btn {
+
+.delete {
   color: red;
 }
 </style>

@@ -1,30 +1,18 @@
 <template>
     <div class="login-container">
-      <h2>{{ isLoginMode ? 'Login' : 'Sign Up' }}</h2>
+      <div class="login-card">
+        <h2>Sign In</h2>
+        <input v-model="loginUsername" placeholder="Username" />
+        <input v-model="loginPassword" type="password" placeholder="Password" />
+        <button @click="login">Login</button>
+      </div>
   
-      <form @submit.prevent="handleSubmit">
-        <input v-model="username" placeholder="Username" required />
-        <input v-model="password" type="password" placeholder="Password" required />
-  
-        <input
-          v-if="!isLoginMode"
-          v-model="profilePic"
-          placeholder="Profile Pic URL (optional)"
-        />
-  
-        <button type="submit">{{ isLoginMode ? 'Login' : 'Sign Up' }}</button>
-      </form>
-  
-      <p class="toggle">
-        <span>
-          {{ isLoginMode ? "Don't have an account?" : "Already have an account?" }}
-        </span>
-        <a href="#" @click.prevent="isLoginMode = !isLoginMode">
-          {{ isLoginMode ? 'Sign up here' : 'Log in here' }}
-        </a>
-      </p>
-  
-      <p v-if="error" class="error">{{ error }}</p>
+      <div class="login-card">
+        <h2>Sign Up</h2>
+        <input v-model="signupUsername" placeholder="Username" />
+        <input v-model="signupPassword" type="password" placeholder="Password" />
+        <button @click="signup">Create Account</button>
+      </div>
     </div>
   </template>
   
@@ -34,71 +22,88 @@
   
   const emit = defineEmits(['loginSuccess'])
   
-  const username = ref('')
-  const password = ref('')
-  const profilePic = ref('')
-  const isLoginMode = ref(true)
-  const error = ref('')
+  const loginUsername = ref('')
+  const loginPassword = ref('')
+  const signupUsername = ref('')
+  const signupPassword = ref('')
   
-  const handleSubmit = async () => {
-    error.value = ''
-    const payload = {
-      username: username.value,
-      password: password.value,
-      profilePic: profilePic.value || undefined
-    }
-  
+  const login = async () => {
     try {
-      const endpoint = isLoginMode.value ? '/login' : '/signup'
-      const res = await axios.post(`http://localhost:3000${endpoint}`, payload)
-  
-      const user = isLoginMode.value ? res.data.user : { username: res.data.username, profilePic: res.data.profilePic }
-      localStorage.setItem('currentUser', JSON.stringify(user))
-      emit('loginSuccess', user)
+      const res = await axios.post('http://localhost:3000/login', {
+        username: loginUsername.value,
+        password: loginPassword.value
+      })
+      localStorage.setItem('currentUser', JSON.stringify(res.data))
+      emit('loginSuccess', res.data)
     } catch (err) {
-      error.value = err.response?.data?.error || 'Something went wrong'
+      alert('Login failed: ' + (err.response?.data?.error || err.message))
+    }
+  }
+  
+  const signup = async () => {
+    try {
+      await axios.post('http://localhost:3000/signup', {
+        username: signupUsername.value,
+        password: signupPassword.value
+      })
+      alert('Account created! You can now log in.')
+      signupUsername.value = ''
+      signupPassword.value = ''
+    } catch (err) {
+      alert('Signup failed: ' + (err.response?.data?.error || err.message))
     }
   }
   </script>
   
   <style scoped>
   .login-container {
-    max-width: 400px;
-    margin: 0 auto;
-    padding: 20px;
-    border: 2px solid #ccc;
+    display: flex;
+    justify-content: center;
+    gap: 40px;
+    margin-top: 60px;
+    flex-wrap: wrap;
+  }
+  
+  .login-card {
+    background: #ffffff;
     border-radius: 12px;
-    background: #fffbe6;
+    padding: 24px;
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.1);
+    min-width: 280px;
+    max-width: 340px;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+  }
+  
+  h2 {
+    margin-bottom: 8px;
     text-align: center;
+    color: #4caf50;
   }
+  
   input {
-    display: block;
-    width: 100%;
     padding: 10px;
-    margin: 8px 0;
+    border: 1px solid #ccc;
+    border-radius: 8px;
     font-size: 1rem;
+    outline-color: #4caf50;
   }
+  
   button {
-    width: 100%;
-    padding: 10px;
-    background: #4CAF50;
+    background: #4caf50;
     color: white;
     border: none;
+    padding: 10px;
+    font-size: 1rem;
+    font-weight: bold;
+    border-radius: 8px;
     cursor: pointer;
-    margin-top: 10px;
+    transition: background 0.2s ease;
   }
-  .toggle {
-    margin-top: 12px;
-    font-size: 0.9rem;
-  }
-  .toggle a {
-    color: #007bff;
-    text-decoration: underline;
-    cursor: pointer;
-  }
-  .error {
-    margin-top: 10px;
-    color: red;
+  
+  button:hover {
+    background: #388e3c;
   }
   </style>
   
