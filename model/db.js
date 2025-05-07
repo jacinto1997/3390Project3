@@ -20,19 +20,26 @@ const init = () => {
       lat REAL,
       lon REAL,
       weather TEXT,
-      temp TEXT
+      temp TEXT,
+      city TEXT
     )
   `)
 }
 init()
 
 // Save a message to the database
-function addMessage({ username, message, date, lat, lon, weather, temp }) {
+function addMessage({ username, message, date, lat, lon, weather, temp, city }) {
+  console.log('Saving message to DB:', { username, message, date, lat, lon, weather, temp, city })
+
   return new Promise((resolve, reject) => {
-    const sql = `INSERT INTO messages (username, message, date, lat, lon, weather, temp) VALUES (?, ?, ?, ?, ?, ?, ?)`
-    db.run(sql, [username, message, date, lat, lon, weather, temp], function (err) {
-      if (err) reject(err)
-      else resolve()
+    const sql = `INSERT INTO messages (username, message, date, lat, lon, weather, temp, city) VALUES (?, ?, ?, ?, ?, ?, ?, ?)`
+    db.run(sql, [username, message, date, lat, lon, weather, temp, city], function (err) {
+      if (err) {
+        console.error('Insert error:', err)
+        reject(err)
+      } else {
+        resolve()
+      }
     })
   })
 }
