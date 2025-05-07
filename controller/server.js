@@ -12,7 +12,9 @@ const {
   dislikeMessage,
   deleteMessage,
   getDailyQuestion,
-  getTrendingMessages
+  getTrendingMessages,
+  addDailyResponse,
+  getDailyResponses
 } = require('../Model/db')
 
 const app = express()
@@ -157,6 +159,28 @@ app.get('/trendingMessages', async (req, res) => {
   }
 })
 
+app.post('/dailyResponse', async (req, res) => {
+  const { username, response } = req.body
+  if (!username || !response) return res.status(400).json({ error: 'Missing data' })
+
+  try {
+    await addDailyResponse({ username, response })
+    res.json({ success: true })
+  } catch (err) {
+    console.error('Failed to save daily response:', err)
+    res.status(500).json({ error: 'Could not save response' })
+  }
+})
+
+app.get('/dailyResponses', async (req, res) => {
+  try {
+    const rows = await getDailyResponses()
+    res.json(rows)
+  } catch (err) {
+    console.error('Failed to get daily responses:', err)
+    res.status(500).json({ error: 'Could not fetch responses' })
+  }
+})
 
 
 

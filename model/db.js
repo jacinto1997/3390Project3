@@ -8,7 +8,7 @@ const db = new sqlite3.Database(path.resolve(__dirname, 'messages.db'), (err) =>
   console.log('✅ Connected to SQLite database')
 })
 
-// Create tables
+// Initialize tables
 const init = () => {
   db.run(`
     CREATE TABLE IF NOT EXISTS messages (
@@ -35,20 +35,25 @@ const init = () => {
       profilePic TEXT
     )
   `)
+
+  db.run(`
+    CREATE TABLE IF NOT EXISTS daily_responses (
+      id INTEGER PRIMARY KEY AUTOINCREMENT,
+      username TEXT,
+      response TEXT,
+      timestamp TEXT
+    )
+  `)
 }
 init()
 
-// Message functions
+// Messages
 function addMessage({ username, message, date, lat, lon, weather, temp, city, profilePic }) {
   return new Promise((resolve, reject) => {
     const sql = `INSERT INTO messages (username, message, date, lat, lon, weather, temp, city, profilePic) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)`
     db.run(sql, [username, message, date, lat, lon, weather, temp, city, profilePic], function (err) {
-      if (err) {
-        console.error('Insert error:', err)
-        reject(err)
-      } else {
-        resolve()
-      }
+      if (err) reject(err)
+      else resolve()
     })
   })
 }
@@ -62,6 +67,7 @@ function getMessages() {
   })
 }
 
+// Likes / Dislikes / Delete
 function likeMessage(id) {
   return new Promise((resolve, reject) => {
     db.run(`UPDATE messages SET likes = likes + 1 WHERE id = ?`, [id], function (err) {
@@ -89,7 +95,52 @@ function deleteMessage(id, username) {
   })
 }
 
-// User functions
+// Daily Question logic
+function getDailyQuestion() {
+  return Promise.resolve({
+    question: "If you could have dinner with anyone, living or dead, who would it be?"
+  })
+}
+
+
+function getTrendingMessages() {
+  return new Promise((resolve, reject) => {
+    const sql = `
+      SELECT username, message, likes
+      FROM messages
+      WHERE likes > 0
+      ORDER BY likes DESC
+      LIMIT 5
+    `
+    db.all(sql, [], (err, rows) => {
+      if (err) reject(err)
+      else resolve(rows)
+    })
+  })
+}
+
+// Daily Responses
+function addDailyResponse({ username, response }) {
+  const timestamp = new Date().toLocaleString()
+  return new Promise((resolve, reject) => {
+    const sql = `INSERT INTO daily_responses (username, response, timestamp) VALUES (?, ?, ?)`
+    db.run(sql, [username, response, timestamp], function (err) {
+      if (err) reject(err)
+      else resolve()
+    })
+  })
+}
+
+function getDailyResponses() {
+  return new Promise((resolve, reject) => {
+    db.all(`SELECT * FROM daily_responses ORDER BY id DESC`, [], (err, rows) => {
+      if (err) reject(err)
+      else resolve(rows)
+    })
+  })
+}
+
+// Users
 function createUser({ username, password, profilePic }) {
   return new Promise((resolve, reject) => {
     bcrypt.hash(password, 10, (err, hash) => {
@@ -122,26 +173,6 @@ function verifyUser({ username, password }) {
   })
 }
 
-function getDailyQuestion() {
-  return Promise.resolve({
-    question: "If you could have dinner with anyone, living or dead, who would it be?"
-  })
-}
-
-function getTrendingMessages() {
-  return new Promise((resolve, reject) => {
-    const sql = `
-      SELECT * FROM messages
-      ORDER BY likes DESC
-      LIMIT 5
-    `
-    db.all(sql, [], (err, rows) => {
-      if (err) reject(err)
-      else resolve(rows)
-    })
-  })
-}
-
 module.exports = {
   db,
   addMessage,
@@ -152,6 +183,8 @@ module.exports = {
   dislikeMessage,
   deleteMessage,
   getDailyQuestion,
-  getTrendingMessages
+  getTrendingMessages,
+  addDailyResponse,
+  getDailyResponses
 }
 

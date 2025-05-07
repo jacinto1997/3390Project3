@@ -1,20 +1,13 @@
 <template>
     <div class="trending-card">
-      <h2>🔥 Trending</h2>
-      <table>
-        <thead>
-          <tr>
-            <th>Words</th>
-            <th>Mentions</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr v-for="msg in trendingMessages" :key="msg.id">
-            <td>{{ msg.word }}</td>
-            <td>{{ msg.count }}</td>
-          </tr>
-        </tbody>
-      </table>
+      <h2>🔥 Trending Posts</h2>
+      <div v-if="trendingMessages.length === 0">No trending posts yet.</div>
+      <ul>
+        <li v-for="msg in trendingMessages" :key="msg.message" class="trending-item">
+          <strong>{{ msg.username }}:</strong> "{{ msg.message }}"
+          <span class="likes">👍 {{ msg.likes }}</span>
+        </li>
+      </ul>
     </div>
   </template>
   
@@ -49,17 +42,17 @@
   h2 {
     margin-bottom: 12px;
   }
-  table {
-    width: 100%;
-    border-collapse: collapse;
+  ul {
+    list-style: none;
+    padding: 0;
   }
-  th,
-  td {
-    text-align: left;
-    padding: 6px;
+  .trending-item {
+    margin-bottom: 10px;
+    font-size: 0.95rem;
   }
-  tbody tr:nth-child(even) {
-    background-color: rgba(255, 255, 255, 0.1);
+  .likes {
+    float: right;
+    font-weight: bold;
   }
   </style>
   

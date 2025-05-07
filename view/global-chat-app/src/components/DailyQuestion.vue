@@ -6,12 +6,25 @@
       <textarea
         v-model="response"
         placeholder="Type your response..."
-        class="response-box"
+        class="respons-box"
       ></textarea>
   
       <button @click="submitResponse" class="submit-btn">Submit</button>
   
       <p v-if="submitted" class="thank-you">Thanks for your response!</p>
+  
+      <div class="responses">
+        <h3>💬 Community Responses</h3>
+        <div
+          v-for="entry in responses"
+          :key="entry.id"
+          class="response-item"
+        >
+          <strong>{{ entry.username }}</strong>:
+          <span>{{ entry.response }}</span>
+          <div class="timestamp">{{ entry.timestamp }}</div>
+        </div>
+      </div>
     </div>
   </template>
   
@@ -22,6 +35,7 @@
   const question = ref('')
   const response = ref('')
   const submitted = ref(false)
+  const responses = ref([])
   
   const fetchQuestion = async () => {
     try {
@@ -32,16 +46,37 @@
     }
   }
   
-  const submitResponse = () => {
+  const fetchResponses = async () => {
+    try {
+      const res = await axios.get('http://localhost:3000/dailyResponses')
+      responses.value = res.data
+    } catch (err) {
+      console.error('Failed to load responses:', err)
+    }
+  }
+  
+  const submitResponse = async () => {
     if (!response.value.trim()) return
-    // You could POST this to backend later
-    console.log('Response submitted:', response.value)
-    submitted.value = true
-    response.value = ''
+    const user = JSON.parse(localStorage.getItem('currentUser'))
+    if (!user) return alert('You must be logged in to respond.')
+  
+    try {
+      await axios.post('http://localhost:3000/dailyResponse', {
+        username: user.username,
+        response: response.value
+      })
+      response.value = ''
+      submitted.value = true
+      await fetchResponses()
+    } catch (err) {
+      console.error('Submit failed:', err)
+      alert('Could not submit response.')
+    }
   }
   
   onMounted(() => {
     fetchQuestion()
+    fetchResponses()
   })
   </script>
   
@@ -86,6 +121,20 @@
     font-size: 0.9rem;
     color: #fff8e1;
     text-align: center;
+  }
+  .responses {
+    margin-top: 20px;
+    background-color: #9c27b0;
+    padding: 12px;
+    border-radius: 12px;
+  }
+  .response-item {
+    margin-bottom: 10px;
+    font-size: 0.95rem;
+  }
+  .timestamp {
+    font-size: 0.75rem;
+    opacity: 0.7;
   }
   </style>
   
