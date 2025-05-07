@@ -1,6 +1,5 @@
 <template>
   <form @submit.prevent="submitMessage">
-    <input v-model="username" placeholder="Your Name" required />
     <textarea v-model="message" placeholder="Your Message" required />
     <button type="submit">Post</button>
   </form>
@@ -10,8 +9,12 @@
 import { ref } from 'vue'
 import axios from 'axios'
 
+const { currentUser } = defineProps({
+  currentUser: Object
+})
+
+
 const emit = defineEmits(['messagePosted'])
-const username = ref('')
 const message = ref('')
 
 const submitMessage = async () => {
@@ -24,17 +27,16 @@ const submitMessage = async () => {
     try {
       const apiKey = '9055233e47a5f72f45363e40bbad40f3'
       const weatherUrl = `https://api.openweathermap.org/data/2.5/weather?lat=${lat}&lon=${lon}&appid=${apiKey}&units=imperial`
-
       const weatherRes = await fetch(weatherUrl)
       const weatherData = await weatherRes.json()
-      console.log('Weather data:', weatherData)  // <-- add this
 
       const weather = weatherData.weather[0].main
       const temp = Math.round(weatherData.main.temp)
       const city = weatherData.name || 'Unknown'
 
       const postData = {
-        username: username.value,
+        username: currentUser.username,
+        profilePic: currentUser.profilePic,
         message: message.value,
         lat,
         lon,
@@ -45,7 +47,6 @@ const submitMessage = async () => {
 
       await axios.post('http://localhost:3000/addMessage', postData)
       emit('messagePosted')
-      username.value = ''
       message.value = ''
     } catch (err) {
       console.error('Failed to post message:', err)
@@ -63,7 +64,7 @@ form {
   flex-direction: column;
   gap: 10px;
 }
-input, textarea {
+textarea {
   padding: 10px;
   font-size: 16px;
 }
