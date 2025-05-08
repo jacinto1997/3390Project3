@@ -1,4 +1,3 @@
-// BACKEND STARTER FILE 
 const express = require('express')
 const cors = require('cors')
 const bodyParser = require('body-parser')
@@ -22,11 +21,15 @@ const {
 const app = express()
 const PORT = 3000
 
-app.use(cors({
+// ✅ Fix for CORS (allowing Netlify frontend to talk to Render backend)
+const corsOptions = {
   origin: 'https://global-chat-project3.netlify.app',
-  methods: ['GET', 'POST'],
+  methods: ['GET', 'POST', 'OPTIONS'],
+  allowedHeaders: ['Content-Type', 'Authorization'],
   credentials: true
-}))
+}
+app.use(cors(corsOptions))
+app.options('*', cors(corsOptions))
 
 app.use(bodyParser.json())
 
@@ -77,14 +80,13 @@ app.post('/login', async (req, res) => {
   if (!username || !password) {
     return res.status(400).json({ error: 'Username and password are required.' })
   }
-  
+
   try {
     const user = await verifyUser({ username, password })
     res.json({
       username: user.username,
       profilePic: user.profilePic || null
     })
-    
   } catch (err) {
     console.error('Login error:', err.message)
     res.status(401).json({ error: 'Invalid username or password.' })
@@ -221,8 +223,6 @@ app.get('/getComments/:messageId', async (req, res) => {
     res.status(500).json({ error: 'Could not fetch comments' })
   }
 })
-
-
 
 // Start server
 app.listen(PORT, () => {
