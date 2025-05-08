@@ -32,8 +32,8 @@
       username: loginUsername.value,
       password: loginPassword.value
     })
-    localStorage.setItem('currentUser', JSON.stringify(res.data.user))
-    emit('loginSuccess', res.data.user)
+    localStorage.setItem('currentUser', JSON.stringify(res.data))
+    emit('loginSuccess', res.data)
   } catch (err) {
     alert('Login failed: ' + (err.response?.data?.error || err.message))
   }

@@ -26,9 +26,10 @@ const response = ref('')
 const responses = ref([])
 
 const fetchQuestion = async () => {
-  await axios.get('https://global-chat-backend-tnn2.onrender.com/dailyQuestion')
+  const res = await axios.get('https://global-chat-backend-tnn2.onrender.com/dailyQuestion')
   question.value = res.data.question
 }
+
 
 const fetchResponses = async () => {
   try {

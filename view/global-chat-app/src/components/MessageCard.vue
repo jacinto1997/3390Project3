@@ -67,18 +67,18 @@ const emit = defineEmits(['messageChanged'])
 
 
 const like = async () => {
-  await axios.post(`https://global-chat-backend-tnn2.onrender.com/like/${id}`)
+  await axios.post(`https://global-chat-backend-tnn2.onrender.com/like/${props.messageData.id}`)
   emit('messageChanged')
 }
 
 const dislike = async () => {
-  await axios.post(`https://global-chat-backend-tnn2.onrender.com/dislike/${id}`)
+  await axios.post(`https://global-chat-backend-tnn2.onrender.com/dislike/${props.messageData.id}`)
   emit('messageChanged')
 }
 
 const deleteMsg = async () => {
   if (confirm('Delete this message?')) {
-    await axios.post(`https://global-chat-backend-tnn2.onrender.com/deleteMessage/${id}`, {
+    await axios.post(`https://global-chat-backend-tnn2.onrender.com/deleteMessage/${props.messageData.id}`, {
     username: props.currentUser.username
     })
     emit('messageChanged')
