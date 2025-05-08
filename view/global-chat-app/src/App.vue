@@ -55,7 +55,7 @@ const showMenu = ref(false)
 
 const fetchMessages = async () => {
   try {
-    const res = await axios.get('http://localhost:3000/getMessages')
+    const res = await axios.get('https://global-chat-backend-tnn2.onrender.com/getMessages')
     messages.value = res.data
   } catch (err) {
     console.error('Failed to fetch messages:', err)
@@ -75,7 +75,7 @@ const logout = () => {
 const deleteAccount = async () => {
   if (!confirm('Are you sure you want to delete your account?')) return
   try {
-    await axios.post('http://localhost:3000/deleteAccount', {
+    await axios.post('https://global-chat-backend-tnn2.onrender.com/deleteAccount', {
       username: currentUser.value.username
     })
     logout()

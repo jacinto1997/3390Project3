@@ -26,13 +26,13 @@ const response = ref('')
 const responses = ref([])
 
 const fetchQuestion = async () => {
-  const res = await axios.get('http://localhost:3000/dailyQuestion')
+  await axios.get('https://global-chat-backend-tnn2.onrender.com/dailyQuestion')
   question.value = res.data.question
 }
 
 const fetchResponses = async () => {
   try {
-    const res = await axios.get('http://localhost:3000/dailyResponses')
+    await axios.get('https://global-chat-backend-tnn2.onrender.com/dailyResponses')
     responses.value = res.data
   } catch (err) {
     console.error('Failed to load responses:', err)
@@ -45,8 +45,8 @@ const submitResponse = async () => {
 
   if (!response.value.trim()) return
 
-  await axios.post('http://localhost:3000/dailyResponse', {
-    username: currentUser.username,
+  await axios.post('https://global-chat-backend-tnn2.onrender.com/dailyResponse', {
+  username: currentUser.username,
     response: response.value.trim()
   })
 

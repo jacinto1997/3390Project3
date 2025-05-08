@@ -17,13 +17,13 @@
   const trending = ref([])
   
   const fetchTrending = async () => {
-    try {
-      const res = await axios.get('http://localhost:3000/trendingMessages')
-      trending.value = res.data
-    } catch (err) {
-      console.error('Failed to fetch trending messages:', err)
-    }
+  try {
+    const res = await axios.get('https://global-chat-backend-tnn2.onrender.com/trendingMessages')
+    trending.value = res.data
+  } catch (err) {
+    console.error('Failed to fetch trending messages:', err)
   }
+}
   
   onMounted(() => {
     fetchTrending()

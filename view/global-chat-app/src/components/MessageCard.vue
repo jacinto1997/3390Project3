@@ -65,20 +65,21 @@ import axios from 'axios'
 const props = defineProps(['messageData', 'currentUser'])
 const emit = defineEmits(['messageChanged'])
 
+
 const like = async () => {
-  await axios.post(`http://localhost:3000/like/${props.messageData.id}`)
+  await axios.post(`https://global-chat-backend-tnn2.onrender.com/like/${id}`)
   emit('messageChanged')
 }
 
 const dislike = async () => {
-  await axios.post(`http://localhost:3000/dislike/${props.messageData.id}`)
+  await axios.post(`https://global-chat-backend-tnn2.onrender.com/dislike/${id}`)
   emit('messageChanged')
 }
 
 const deleteMsg = async () => {
   if (confirm('Delete this message?')) {
-    await axios.post(`http://localhost:3000/deleteMessage/${props.messageData.id}`, {
-      username: props.currentUser.username
+    await axios.post(`https://global-chat-backend-tnn2.onrender.com/deleteMessage/${id}`, {
+    username: props.currentUser.username
     })
     emit('messageChanged')
   }
@@ -103,9 +104,10 @@ const showReply = ref(false)
 const newComment = ref('')
 const comments = ref([])
 
+
 const fetchComments = async () => {
   try {
-    const res = await axios.get(`http://localhost:3000/getComments/${props.messageData.id}`)
+    const res = await axios.get(`https://global-chat-backend-tnn2.onrender.com/getComments/${props.messageData.id}`)
     comments.value = res.data
   } catch (err) {
     console.error('Failed to fetch comments:', err)
@@ -116,7 +118,7 @@ const submitComment = async () => {
   const user = JSON.parse(localStorage.getItem('currentUser'))
   if (!user || !newComment.value.trim()) return
 
-  await axios.post('http://localhost:3000/addComment', {
+  await axios.post('https://global-chat-backend-tnn2.onrender.com/addComment', {
     message_id: props.messageData.id,
     username: user.username,
     comment: newComment.value.trim()
@@ -125,7 +127,6 @@ const submitComment = async () => {
   newComment.value = ''
   fetchComments()
 }
-
 onMounted(fetchComments)
 
 </script>

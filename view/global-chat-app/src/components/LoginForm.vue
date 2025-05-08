@@ -27,31 +27,31 @@
   const signupPassword = ref('')
   
   const login = async () => {
-    try {
-      const res = await axios.post('http://localhost:3000/login', {
-        username: loginUsername.value,
-        password: loginPassword.value
-      })
-      localStorage.setItem('currentUser', JSON.stringify(res.data))
-      emit('loginSuccess', res.data)
-    } catch (err) {
-      alert('Login failed: ' + (err.response?.data?.error || err.message))
-    }
+  try {
+    const res = await axios.post('https://global-chat-backend-tnn2.onrender.com/login', {
+      username: loginUsername.value,
+      password: loginPassword.value
+    })
+    localStorage.setItem('currentUser', JSON.stringify(res.data.user))
+    emit('loginSuccess', res.data.user)
+  } catch (err) {
+    alert('Login failed: ' + (err.response?.data?.error || err.message))
   }
+}
   
-  const signup = async () => {
-    try {
-      await axios.post('http://localhost:3000/signup', {
-        username: signupUsername.value,
-        password: signupPassword.value
-      })
-      alert('Account created! You can now log in.')
-      signupUsername.value = ''
-      signupPassword.value = ''
-    } catch (err) {
-      alert('Signup failed: ' + (err.response?.data?.error || err.message))
-    }
+const signup = async () => {
+  try {
+    await axios.post('https://global-chat-backend-tnn2.onrender.com/signup', {
+      username: signupUsername.value,
+      password: signupPassword.value
+    })
+    alert('Account created! You can now log in.')
+    signupUsername.value = ''
+    signupPassword.value = ''
+  } catch (err) {
+    alert('Signup failed: ' + (err.response?.data?.error || err.message))
   }
+}
   </script>
   
   <style scoped>
