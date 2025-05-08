@@ -1,12 +1,11 @@
 <template>
-    <div class="trending-card">
-      <h2>🔥 Trending Posts</h2>
-      <div v-if="trendingMessages.length === 0">No trending posts yet.</div>
-      <ul>
-        <li v-for="msg in trendingMessages" :key="msg.message" class="trending-item">
-          <strong>{{ msg.username }}:</strong> "{{ msg.message }}"
-          <span class="likes">👍 {{ msg.likes }}</span>
-        </li>
+    <div class="trending-panel">
+        <h3 class="panel-title">🔥 Trending Posts</h3>
+        <ul>
+        <li v-for="(item, index) in trending" :key="index">
+  <strong>{{ item.username }}</strong>: "{{ item.message }}" — {{ item.likes }} 👍
+</li>
+
       </ul>
     </div>
   </template>
@@ -15,44 +14,65 @@
   import { ref, onMounted } from 'vue'
   import axios from 'axios'
   
-  const trendingMessages = ref([])
+  const trending = ref([])
   
-  const fetchTrendingMessages = async () => {
+  const fetchTrending = async () => {
     try {
       const res = await axios.get('http://localhost:3000/trendingMessages')
-      trendingMessages.value = res.data
+      trending.value = res.data
     } catch (err) {
       console.error('Failed to fetch trending messages:', err)
     }
   }
   
   onMounted(() => {
-    fetchTrendingMessages()
+    fetchTrending()
   })
   </script>
   
   <style scoped>
-  .trending-card {
-    background-color: #2196f3;
-    color: white;
+  .panel-title {
+  background-color: var(--title-bg);
+  color: var(--title-text);
+  padding: 10px 16px;
+  border-radius: 10px;
+  font-weight: 600;
+  font-size: 1.2rem;
+  margin-bottom: 12px;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05);
+}
+
+  .trending-panel {
+    background-color: #FFFFFF;
+    border-radius: 12px;
     padding: 16px;
-    border-radius: 16px;
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+    color: #333333;
+    border: 1px solid rgba(255, 255, 255, 0.1); /* subtle border in dark */
+
   }
-  h2 {
+  
+  h3 {
     margin-bottom: 12px;
+    /* Trending Post font color*/
+    color: #2C3E50;
   }
+  
   ul {
     list-style: none;
     padding: 0;
+    margin: 0;
   }
-  .trending-item {
-    margin-bottom: 10px;
-    font-size: 0.95rem;
-  }
-  .likes {
-    float: right;
-    font-weight: bold;
-  }
+  
+  li {
+  background-color: var(--bubble-bg);
+  padding: 12px 16px;
+  border-radius: 12px;
+  margin-bottom: 8px;
+  color: inherit;
+  border: 1px solid rgba(255, 255, 255, 0.1); /* subtle border in dark */
+
+}
+
   </style>
   

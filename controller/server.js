@@ -2,6 +2,8 @@
 const express = require('express')
 const cors = require('cors')
 const bodyParser = require('body-parser')
+const { addComment, getComments } = require('../Model/db')
+
 const {
   db,
   addMessage,
@@ -186,6 +188,34 @@ app.get('/dailyResponses', async (req, res) => {
   }
 })
 
+// POST /addComment
+app.post('/addComment', async (req, res) => {
+  const { message_id, username, comment } = req.body
+  const date = new Date().toLocaleString()
+
+  if (!username || !comment || !message_id) {
+    return res.status(400).json({ error: 'Missing data' })
+  }
+
+  try {
+    await addComment({ message_id, username, comment, date })
+    res.json({ success: true })
+  } catch (err) {
+    console.error('Failed to save comment:', err)
+    res.status(500).json({ error: 'Could not save comment' })
+  }
+})
+
+// GET /getComments/:messageId
+app.get('/getComments/:messageId', async (req, res) => {
+  try {
+    const comments = await getComments(req.params.messageId)
+    res.json(comments)
+  } catch (err) {
+    console.error('Failed to fetch comments:', err)
+    res.status(500).json({ error: 'Could not fetch comments' })
+  }
+})
 
 
 

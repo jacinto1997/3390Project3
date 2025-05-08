@@ -1,18 +1,19 @@
 <template>
   <div class="app-container">
     <header class="app-header">
-  <h1 class="app-title">🌍 Global Chat</h1>
-  <div v-if="currentUser" class="profile-box">
-    <span class="username-label">{{ currentUser.username }}</span>
-    <button @click="showMenu = !showMenu" class="profile-icon">👤</button>
-    <div v-if="showMenu" class="dropdown">
-      <button @click="logout">Logout</button>
-      <button @click="deleteAccount">Delete Account</button>
-    </div>
-  </div>
-</header>
-
-
+      <button @click="toggleDarkMode" class="dark-toggle">🌓</button>
+      <h1 class="app-title">🌍 Global Chat</h1>
+      <div class="actions-right">
+        <div v-if="currentUser" class="profile-box">
+          <span class="username-label">{{ currentUser.username }}</span>
+          <button @click="showMenu = !showMenu" class="profile-icon">👤</button>
+          <div v-if="showMenu" class="dropdown">
+            <button @click="logout">Logout</button>
+            <button @click="deleteAccount">Remove Account</button>
+          </div>
+        </div>
+      </div>
+    </header>
 
     <LoginForm v-if="!currentUser" @loginSuccess="onLogin" />
 
@@ -85,6 +86,10 @@ const deleteAccount = async () => {
   }
 }
 
+const toggleDarkMode = () => {
+  document.body.classList.toggle('dark-mode')
+}
+
 onMounted(() => {
   const savedUser = localStorage.getItem('currentUser')
   if (savedUser) {
@@ -94,67 +99,228 @@ onMounted(() => {
 })
 </script>
 
+<style>
+body {
+  background-color: #F9FAFB;
+  color: #333333;
+  font-family: sans-serif;
+  margin: 0;
+  padding: 0;
+  transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+:root {
+  --login-bg: #f3f6fb;
+  --login-text: #2C3E50;
+  --panel-bg: #2C3E50;
+  --header-bg: #2C3E50;
+  --icon-color: #4A90E2;
+  --message-bg: #ffffff;
+  --trending-bg: #F9FAFB;
+  --response-bg: #F9FAFB;
+  --bubble-bg: #f1f1f1;
+  --title-bg: #e4e8f0;
+  --title-text: #2C3E50;
+  --login-container-bg: #dce3ec;
+  --primary-button: #4A90E2;
+  --button-text: white;
+  --bubble-bg: #f1f1f1;
+  --reply-box-bg: #ffffff;
+}
+
+
+
+body.dark-mode {
+  
+  --login-container-bg: #2b2b2b;
+  --login-bg: #2a2a2a;
+  --login-text: #f0f0f0;
+  --header-bg: #2a2a2a;
+  --icon-color: #66b2ff;
+  --message-bg: #2c2c2c;
+  --trending-bg: #333333;
+  --response-bg: #333333;
+  --bubble-bg: #3b3b3b;
+  --title-bg: #494747;
+  --title-text: #eeeeee;
+  background-color: #1e1e1e;
+  color: #eeeeee;
+  --bubble-bg: #3b3b3b;
+  --reply-box-bg: #2c2c2c;
+}
+
+body.dark-mode :is(
+  .card,
+  .login-card,
+  .daily-question,
+  .trending-panel,
+  .app-header,
+  .message-text,
+  .question-text,
+  .username-label,
+  .timestamp,
+  strong,
+  p,
+  span,
+  li,
+  h1,
+  h2,
+  h3,
+  h4
+) {
+  color: #eeeeee !important;
+}
+
+body.dark-mode input,
+body.dark-mode textarea {
+  background-color: #333;
+  color: #f0f0f0 !important;
+  border-color: #555;
+}
+
+body.dark-mode .dropdown,
+body.dark-mode .login-card,
+body.dark-mode .daily-question,
+body.dark-mode .trending-panel {
+  background-color: var(--response-bg);
+  color: #eeeeee !important;
+}
+
+body.dark-mode .card {
+  background-color: var(--message-bg);
+  color: #eeeeee !important;
+  transition: background-color 0.3s ease;
+}
+
+body.dark-mode .action {
+  color: #66b2ff !important;
+}
+
+body.dark-mode .delete {
+  color: #ff6b6b !important;
+}
+
+
+
+body.dark-mode button:hover {
+  background-color: #5ea3e4 !important;
+}
+
+body.dark-mode .login-container {
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.4);
+}
+
+</style>
+
 <style scoped>
+
 .app-container {
   max-width: 1200px;
   margin: 0 auto;
   padding: 20px;
+  min-height: 100vh;
+}
+.profile-icon,
+.dark-toggle {
+  background: none !important;
+  border: none;
+  padding: 0;
+  outline: none;
+  box-shadow: none;
+}
+
+.dark-toggle.top-left {
+  position: absolute;
+  top: 12px;
+  left: 16px;
+  font-size: 18px;
+  background: none;
+  border: none;
+  color: white;
+  cursor: pointer;
+  z-index: 10;
 }
 
 .app-header {
-  background: linear-gradient(to right, #4caf50, #81c784);
+  min-height: 100px; /* give a bit more height for centering */
+  background: var(--header-bg);
   color: white;
-  padding: 16px 24px;
+  padding: 24px;
   border-radius: 12px;
   margin-bottom: 20px;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  position: relative;
+  border: 1px solid rgba(255, 255, 255, 0.1);
 }
 
+
+/* Global Chat Box*/
 .app-title {
   font-size: 2rem;
   font-weight: 700;
   letter-spacing: 1px;
+  background-color: var(--title-bg);
+  color: var(--title-text);
+  padding: 12px 120px;
+  border-radius: 12px;
+  margin-bottom: 8px;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  position: absolute;
+  top: 30%;
+  left: 50%;
+  transform: translate(-50%,-50%);
 }
 
-.profile-box {
-  background-color: rgba(255, 255, 255, 0.2);
-  padding: 8px 14px;
-  border-radius: 24px;
+
+.actions-right {
+  position: absolute;
+  top: 16px;
+  right: 24px;
   display: flex;
   align-items: center;
-  gap: 8px;
+  gap: 14px;
+}
+
+
+.profile-box {
+  background-color: var(--title-bg);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  padding: 8px 14px;
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  gap: 16px;
   color: white;
-  position: relative;
-  font-size: 1rem;
 }
 
 .username-label {
-  color: white;
+  color: var(--title-text);
   font-weight: 600;
   white-space: nowrap;
 }
-
 
 .profile-icon {
   font-size: 20px;
   background: none;
   border: none;
   cursor: pointer;
-  color: white;
+  color: var(--icon-color);
+}
+
+.profile-wrapper {
+  position: relative;
 }
 
 .dropdown {
   position: absolute;
-  top: 70px;
-  right: 24px;
+  top: 50px;
+  right: 0px;
   background: white;
   border: 1px solid #ccc;
   border-radius: 8px;
   padding: 8px;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  z-index: 100;
 }
 
 .dropdown button {
@@ -165,6 +331,7 @@ onMounted(() => {
   padding: 6px 12px;
   text-align: left;
   cursor: pointer;
+  color: #2C3E50;
 }
 
 .main-grid {
@@ -180,4 +347,13 @@ onMounted(() => {
   flex-direction: column;
   gap: 16px;
 }
+
+.dark-toggle {
+  font-size: 18px;
+  background: none;
+  border: none;
+  color: white;
+  cursor: pointer;
+}
+
 </style>

@@ -44,6 +44,17 @@ const init = () => {
       timestamp TEXT
     )
   `)
+  
+  db.run(`
+    CREATE TABLE IF NOT EXISTS comments (
+      id INTEGER PRIMARY KEY AUTOINCREMENT,
+      message_id INTEGER,
+      username TEXT,
+      comment TEXT,
+      date TEXT
+  )
+`)
+
 }
 init()
 
@@ -173,6 +184,26 @@ function verifyUser({ username, password }) {
   })
 }
 
+// Add a comment
+function addComment({ message_id, username, comment, date }) {
+  return new Promise((resolve, reject) => {
+    const sql = `INSERT INTO comments (message_id, username, comment, date) VALUES (?, ?, ?, ?)`
+    db.run(sql, [message_id, username, comment, date], function (err) {
+      if (err) reject(err)
+      else resolve()
+    })
+  })
+}
+
+// Get comments for a specific message
+function getComments(message_id) {
+  return new Promise((resolve, reject) => {
+    db.all(`SELECT * FROM comments WHERE message_id = ? ORDER BY id ASC`, [message_id], (err, rows) => {
+      if (err) reject(err)
+      else resolve(rows)
+    })
+  })
+}
 module.exports = {
   db,
   addMessage,
@@ -185,6 +216,8 @@ module.exports = {
   getDailyQuestion,
   getTrendingMessages,
   addDailyResponse,
-  getDailyResponses
+  getDailyResponses,
+  addComment,
+  getComments
 }
 

@@ -1,14 +1,13 @@
 <template>
     <div class="login-container">
       <div class="login-card">
-        <h2>Sign In</h2>
-        <input v-model="loginUsername" placeholder="Username" />
+        <h2><span class="form-title">Sign In</span></h2>        <input v-model="loginUsername" placeholder="Username" />
         <input v-model="loginPassword" type="password" placeholder="Password" />
         <button @click="login">Login</button>
       </div>
   
       <div class="login-card">
-        <h2>Sign Up</h2>
+        <h2><span class="form-title">Sign Up</span></h2>
         <input v-model="signupUsername" placeholder="Username" />
         <input v-model="signupPassword" type="password" placeholder="Password" />
         <button @click="signup">Create Account</button>
@@ -56,30 +55,50 @@
   </script>
   
   <style scoped>
-  .login-container {
-    display: flex;
-    justify-content: center;
-    gap: 40px;
-    margin-top: 60px;
-    flex-wrap: wrap;
-  }
+ .login-container {
+  display: flex;
+  justify-content: center;
+  gap: 40px;
+  margin-top: 60px;
+  flex-wrap: wrap;
+  background-color: var(--login-container-bg);
+  padding: 40px 0;
+  border-radius: 16px;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.1); /* subtle lift effect */
+  border: 1px solid rgba(0, 0, 0, 0.05);      /* subtle border in light mode */
+}
+
   
   .login-card {
-    background: #ffffff;
-    border-radius: 12px;
-    padding: 24px;
-    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.1);
-    min-width: 280px;
-    max-width: 340px;
-    display: flex;
-    flex-direction: column;
-    gap: 12px;
-  }
+  background-color: var(--login-bg); /* use the variable instead of fixed white */
+  color: var(--login-text);
+  border-radius: 12px;
+  padding: 24px;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.05);
+  min-width: 280px;
+  max-width: 340px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.form-title {
+  background-color: var(--title-bg);
+  color: var(--title-text);
+  padding: 8px 16px;
+  border-radius: 10px;
+  font-weight: 600;
+  font-size: 1.1rem;
+  display: inline-block;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05);
+}
+
+  
   
   h2 {
     margin-bottom: 8px;
     text-align: center;
-    color: #4caf50;
+    color: #2C3E50;
   }
   
   input {
@@ -87,11 +106,11 @@
     border: 1px solid #ccc;
     border-radius: 8px;
     font-size: 1rem;
-    outline-color: #4caf50;
+    outline-color: #4A90E2;
   }
   
   button {
-    background: #4caf50;
+    background: #4A90E2;
     color: white;
     border: none;
     padding: 10px;
@@ -103,7 +122,7 @@
   }
   
   button:hover {
-    background: #388e3c;
+    background: #357ABD;
   }
   </style>
   

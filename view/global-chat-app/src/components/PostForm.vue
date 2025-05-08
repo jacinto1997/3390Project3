@@ -73,17 +73,27 @@ form {
   display: flex;
   flex-direction: column;
   gap: 10px;
+  
 }
 textarea {
   padding: 10px;
   font-size: 16px;
   resize: none;
+  
 }
 button {
   padding: 10px;
   background: #4CAF50;
   color: white;
   border: none;
+  border-radius: 8px;
   cursor: pointer;
+  font-weight: bold;
+  transition: background 0.2s ease;
+  border: 1px solid rgba(255, 255, 255, 0.1); /* subtle border in dark */
+  }
+
+  button:hover {
+  background-color: #3e8e41; /* darker green */
 }
 </style>
