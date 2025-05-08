@@ -72,7 +72,7 @@ app.post('/login', async (req, res) => {
   if (!username || !password) {
     return res.status(400).json({ error: 'Username and password are required.' })
   }
-
+  
   try {
     const user = await verifyUser({ username, password })
     res.json({
@@ -221,5 +221,5 @@ app.get('/getComments/:messageId', async (req, res) => {
 
 // Start server
 app.listen(PORT, () => {
-  console.log(`Server running at http://localhost:${PORT}`)
+  console.log(`Server running on port ${PORT}`)
 })
