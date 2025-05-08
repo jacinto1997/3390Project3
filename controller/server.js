@@ -1,3 +1,4 @@
+// BACKEND STARTER FILE 
 const express = require('express')
 const cors = require('cors')
 const bodyParser = require('body-parser')
@@ -21,13 +22,14 @@ const {
 const app = express()
 const PORT = 3000
 
-// ✅ Fix for CORS (allowing Netlify frontend to talk to Render backend)
+// ✅ CORS configuration for Netlify frontend
 const corsOptions = {
   origin: 'https://global-chat-project3.netlify.app',
   methods: ['GET', 'POST', 'OPTIONS'],
-  allowedHeaders: ['Content-Type', 'Authorization'],
+  allowedHeaders: ['Content-Type'],
   credentials: true
 }
+
 app.use(cors(corsOptions))
 app.options('*', cors(corsOptions))
 
@@ -152,6 +154,7 @@ app.post('/deleteMessage/:id', async (req, res) => {
   }
 })
 
+// GET /dailyQuestion
 app.get('/dailyQuestion', async (req, res) => {
   try {
     const result = await getDailyQuestion()
@@ -162,6 +165,7 @@ app.get('/dailyQuestion', async (req, res) => {
   }
 })
 
+// GET /trendingMessages
 app.get('/trendingMessages', async (req, res) => {
   try {
     const result = await getTrendingMessages()
@@ -172,6 +176,7 @@ app.get('/trendingMessages', async (req, res) => {
   }
 })
 
+// POST /dailyResponse
 app.post('/dailyResponse', async (req, res) => {
   const { username, response } = req.body
   if (!username || !response) return res.status(400).json({ error: 'Missing data' })
@@ -185,6 +190,7 @@ app.post('/dailyResponse', async (req, res) => {
   }
 })
 
+// GET /dailyResponses
 app.get('/dailyResponses', async (req, res) => {
   try {
     const rows = await getDailyResponses()
