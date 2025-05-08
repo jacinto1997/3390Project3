@@ -22,7 +22,12 @@ const {
 const app = express()
 const PORT = 3000
 
-app.use(cors())
+app.use(cors({
+  origin: 'https://global-chat-project3.netlify.app',
+  methods: ['GET', 'POST'],
+  credentials: true
+}))
+
 app.use(bodyParser.json())
 
 // POST /addMessage
