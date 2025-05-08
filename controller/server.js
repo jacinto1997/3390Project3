@@ -2,7 +2,7 @@
 const express = require('express')
 const cors = require('cors')
 const bodyParser = require('body-parser')
-const { addComment, getComments } = require('../Model/db')
+const { addComment, getComments } = require('../model/db')
 
 const {
   db,
@@ -17,7 +17,7 @@ const {
   getTrendingMessages,
   addDailyResponse,
   getDailyResponses
-} = require('../Model/db')
+} = require('../model/db')
 
 const app = express()
 const PORT = 3000
