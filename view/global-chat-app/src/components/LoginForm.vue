@@ -1,8 +1,7 @@
 <template>
   <div class="login-container">
     <div class="login-card">
-      <h2><span class="form-title">Sign In</span></h2>
-      <input v-model="loginUsername" placeholder="Username" />
+      <h2><span class="form-title">Sign In</span></h2>        <input v-model="loginUsername" placeholder="Username" />
       <input v-model="loginPassword" type="password" placeholder="Password" />
       <button @click="login">Login</button>
     </div>
@@ -29,7 +28,7 @@ const signupPassword = ref('')
 
 const login = async () => {
   try {
-    const res = await axios.post('https://global-chat-backend-tnn2.onrender.com/login', {
+    const res = await axios.post('http://localhost:3000/login', {
       username: loginUsername.value,
       password: loginPassword.value
     })
@@ -42,7 +41,7 @@ const login = async () => {
 
 const signup = async () => {
   try {
-    await axios.post('https://global-chat-backend-tnn2.onrender.com/signup', {
+    await axios.post('http://localhost:3000/signup', {
       username: signupUsername.value,
       password: signupPassword.value
     })
@@ -57,41 +56,44 @@ const signup = async () => {
 
 <style scoped>
 .login-container {
-  display: flex;
-  justify-content: center;
-  gap: 40px;
-  margin-top: 60px;
-  flex-wrap: wrap;
-  background-color: var(--login-container-bg);
-  padding: 40px 0;
-  border-radius: 16px;
-  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.1);
-  border: 1px solid rgba(0, 0, 0, 0.05);
+display: flex;
+justify-content: center;
+gap: 40px;
+margin-top: 60px;
+flex-wrap: wrap;
+background-color: var(--login-container-bg);
+padding: 40px 0;
+border-radius: 16px;
+box-shadow: 0 8px 24px rgba(0, 0, 0, 0.1); /* subtle lift effect */
+border: 1px solid rgba(0, 0, 0, 0.05);      /* subtle border in light mode */
 }
 
+
 .login-card {
-  background-color: var(--login-bg);
-  color: var(--login-text);
-  border-radius: 12px;
-  padding: 24px;
-  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.05);
-  min-width: 280px;
-  max-width: 340px;
-  display: flex;
-  flex-direction: column;
-  gap: 12px;
+background-color: var(--login-bg); /* use the variable instead of fixed white */
+color: var(--login-text);
+border-radius: 12px;
+padding: 24px;
+box-shadow: 0 4px 16px rgba(0, 0, 0, 0.05);
+min-width: 280px;
+max-width: 340px;
+display: flex;
+flex-direction: column;
+gap: 12px;
 }
 
 .form-title {
-  background-color: var(--title-bg);
-  color: var(--title-text);
-  padding: 8px 16px;
-  border-radius: 10px;
-  font-weight: 600;
-  font-size: 1.1rem;
-  display: inline-block;
-  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05);
+background-color: var(--title-bg);
+color: var(--title-text);
+padding: 8px 16px;
+border-radius: 10px;
+font-weight: 600;
+font-size: 1.1rem;
+display: inline-block;
+box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05);
 }
+
+
 
 h2 {
   margin-bottom: 8px;

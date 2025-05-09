@@ -26,13 +26,13 @@ const response = ref('')
 const responses = ref([])
 
 const fetchQuestion = async () => {
-  const res = await axios.get('https://global-chat-backend-tnn2.onrender.com/dailyQuestion')
+  const res = await axios.get('http://localhost:3000/dailyQuestion')
   question.value = res.data.question
 }
 
 const fetchResponses = async () => {
   try {
-    const res = await axios.get('https://global-chat-backend-tnn2.onrender.com/dailyResponses')
+    const res = await axios.get('http://localhost:3000/dailyResponses')
     responses.value = res.data
   } catch (err) {
     console.error('Failed to load responses:', err)
@@ -42,9 +42,10 @@ const fetchResponses = async () => {
 const submitResponse = async () => {
   const currentUser = JSON.parse(localStorage.getItem('currentUser'))
   if (!currentUser) return alert('Please log in first.')
+
   if (!response.value.trim()) return
 
-  await axios.post('https://global-chat-backend-tnn2.onrender.com/dailyResponse', {
+  await axios.post('http://localhost:3000/dailyResponse', {
     username: currentUser.username,
     response: response.value.trim()
   })
@@ -66,7 +67,8 @@ onMounted(() => {
   border-radius: 12px;
   box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
   color: inherit;
-  border: 1px solid rgba(255, 255, 255, 0.1);
+  border: 1px solid rgba(255, 255, 255, 0.1); /* subtle border in dark */
+
 }
 
 .question-box {
@@ -74,12 +76,15 @@ onMounted(() => {
   display: flex;
   flex-direction: column;
   gap: 10px;
+  
 }
+
 
 .question-text {
   font-size: 1.1rem;
   margin: 8px 0 12px;
   color: #2C3E50;
+  
 }
 
 input {
@@ -92,7 +97,9 @@ input {
   border-radius: 8px;
   border: 1px solid #ccc;
   outline-color: #4A90E2;
+  
 }
+
 
 button {
   background-color: var(--primary-button);
@@ -103,7 +110,8 @@ button {
   font-weight: bold;
   cursor: pointer;
   transition: background 0.2s ease;
-  border: 1px solid rgba(255, 255, 255, 0.1);
+  border: 1px solid rgba(255, 255, 255, 0.1); /* subtle border in dark */
+
 }
 
 button:hover {
@@ -112,6 +120,7 @@ button:hover {
 
 .responses-box {
   margin-top: 20px;
+  
 }
 
 .response-item {
@@ -120,7 +129,8 @@ button:hover {
   border-radius: 12px;
   margin-bottom: 8px;
   color: inherit;
-  border: 1px solid rgba(255, 255, 255, 0.1);
+  border: 1px solid rgba(255, 255, 255, 0.1); /* subtle border in dark */
+
 }
 
 .timestamp {
@@ -128,7 +138,6 @@ button:hover {
   color: var(--title-text);
   margin-top: 4px;
 }
-
 .panel-title {
   background-color: var(--title-bg);
   color: var(--title-text);
@@ -139,4 +148,5 @@ button:hover {
   margin-bottom: 12px;
   box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05);
 }
+
 </style>

@@ -55,7 +55,7 @@ const submitMessage = async () => {
         date: new Date().toLocaleString()
       }
 
-      await axios.post('https://global-chat-backend-tnn2.onrender.com/addMessage', postData)
+      await axios.post('http://localhost:3000/addMessage', postData)
       emit('messagePosted')
       message.value = ''
     } catch (err) {

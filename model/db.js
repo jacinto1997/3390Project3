@@ -220,4 +220,3 @@ module.exports = {
   addComment,
   getComments
 }
-

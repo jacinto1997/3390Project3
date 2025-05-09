@@ -2,7 +2,7 @@
 const express = require('express')
 const cors = require('cors')
 const bodyParser = require('body-parser')
-const { addComment, getComments } = require('../model/db')
+const { addComment, getComments } = require('../Model/db')
 
 const {
   db,
@@ -17,22 +17,12 @@ const {
   getTrendingMessages,
   addDailyResponse,
   getDailyResponses
-} = require('../model/db')
+} = require('../Model/db')
 
 const app = express()
 const PORT = 3000
 
-// ✅ CORS configuration for Netlify frontend
-const corsOptions = {
-  origin: 'https://global-chat-project3.netlify.app',
-  methods: ['GET', 'POST', 'OPTIONS'],
-  allowedHeaders: ['Content-Type'],
-  credentials: true
-}
-
-app.use(cors(corsOptions))
-app.options('*', cors(corsOptions))
-
+app.use(cors())
 app.use(bodyParser.json())
 
 // POST /addMessage
@@ -89,6 +79,7 @@ app.post('/login', async (req, res) => {
       username: user.username,
       profilePic: user.profilePic || null
     })
+    
   } catch (err) {
     console.error('Login error:', err.message)
     res.status(401).json({ error: 'Invalid username or password.' })
@@ -154,7 +145,6 @@ app.post('/deleteMessage/:id', async (req, res) => {
   }
 })
 
-// GET /dailyQuestion
 app.get('/dailyQuestion', async (req, res) => {
   try {
     const result = await getDailyQuestion()
@@ -165,7 +155,6 @@ app.get('/dailyQuestion', async (req, res) => {
   }
 })
 
-// GET /trendingMessages
 app.get('/trendingMessages', async (req, res) => {
   try {
     const result = await getTrendingMessages()
@@ -176,7 +165,6 @@ app.get('/trendingMessages', async (req, res) => {
   }
 })
 
-// POST /dailyResponse
 app.post('/dailyResponse', async (req, res) => {
   const { username, response } = req.body
   if (!username || !response) return res.status(400).json({ error: 'Missing data' })
@@ -190,7 +178,6 @@ app.post('/dailyResponse', async (req, res) => {
   }
 })
 
-// GET /dailyResponses
 app.get('/dailyResponses', async (req, res) => {
   try {
     const rows = await getDailyResponses()
@@ -230,7 +217,9 @@ app.get('/getComments/:messageId', async (req, res) => {
   }
 })
 
+
+
 // Start server
 app.listen(PORT, () => {
-  console.log(`Server running on port ${PORT}`)
+  console.log(`Server running at http://localhost:${PORT}`)
 })
